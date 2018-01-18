@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 /**
  * 可拖动的悬浮按钮
  * Created by linqs on 2017/12/21.
- * http://blog.csdn.net/l_o_s/article/details/59108227
  */
 
 public class SonnyJackDragView implements View.OnTouchListener {

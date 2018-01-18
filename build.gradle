@@ -12,6 +12,10 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        //https://bintray.com/novoda
+        //https://github.com/novoda/bintray-release
+        classpath 'com.novoda:bintray-release:0.8.0'
     }
 }
 
@@ -19,6 +23,14 @@ allprojects {
     repositories {
         google()
         jcenter()
+    }
+
+    //加上这些
+    tasks.withType(Javadoc) {
+        options{ encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/7/docs/api"
+        }
     }
 }
 
