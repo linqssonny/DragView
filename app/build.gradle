@@ -8,13 +8,39 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    //签名
+    signingConfigs {
+        release {
+            storeFile file("dragview.jks")
+            storePassword "123456"
+            keyAlias "SonnyJack"
+            keyPassword "123456"
+        }
+        debug {
+            storeFile file("dragview.jks")
+            storePassword "123456"
+            keyAlias "SonnyJack"
+            keyPassword "123456"
+        }
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
+    }
+    compileOptions {
+        //支持java8特性
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

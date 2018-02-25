@@ -9,15 +9,17 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        versionCode 2
+        versionName "1.1"
     }
 
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -30,12 +32,20 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
 }
 
+
+task makeJar(type:proguard.gradle.ProGuardTask,dependsOn:"build"){
+    delete 'build/outputs/aar/library-release.aar'                     //先删除输出文件夹中之前已经混淆好的旧jar
+    injars 'build/intermediates-jars/release/classes.jar'   //输入流的源文件地址
+    outjars 'build/outputs/aar/library-release.aar'                       //输出流的文件地址
+    configuration 'proguard-rules.pro'                         //混淆配置
+}
+
 //添加
 publish {
     userOrg = 'sonnyjack'//bintray.com用户名
     groupId = 'com.sonnyjack.widget'//jcenter上的路径
     artifactId = 'DrawView'//项目名称
-    publishVersion = '0.1.0'//版本号
+    publishVersion = '0.1.1'//版本号
     desc = '这是个可拖动的悬浮按钮'//描述，不重要
     website = 'https://github.com/linqssonny/DrawView'//网站，不重要；尽量模拟github上的地址，例如我这样的；当然你有地址最好了
 }

@@ -19,3 +19,25 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#-libraryjars '/Users/linqs/Library/Java/jdk1.7.0_67/jre/lib/rt.jar'
+
+#-libraryjars '/Users/linqs/Library/Android/sdk/platforms/android-26/android.jar'
+
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-keepattributes SourceFile,LineNumberTable
+
+-dontwarn com.sonnyjack.widget.dragview.**
+-keep class com.sonnyjack.widget.dragview.SonnyJackDragView
+-keepclassmembers class com.sonnyjack.widget.dragview.SonnyJackDragView {
+    public *;
+}
+
+-keep class com.sonnyjack.widget.dragview.SonnyJackDragView$* {
+    public *;
+}

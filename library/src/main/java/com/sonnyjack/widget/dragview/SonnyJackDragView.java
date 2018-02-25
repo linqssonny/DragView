@@ -52,7 +52,7 @@ public class SonnyJackDragView implements View.OnTouchListener {
         }
     }
 
-    public void initDragView() {
+    private void initDragView() {
         if (null == mActivity) {
             throw new NullPointerException("the activity is null");
         }
