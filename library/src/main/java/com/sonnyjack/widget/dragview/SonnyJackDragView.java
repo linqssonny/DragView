@@ -20,8 +20,6 @@ import java.lang.reflect.Field;
  */
 
 public class SonnyJackDragView implements View.OnTouchListener {
-    private Activity mActivity;
-    private View mDragView;
     private Builder mBuilder;
 
     private int mStatusBarHeight, mScreenWidth, mScreenHeight;
@@ -30,15 +28,17 @@ public class SonnyJackDragView implements View.OnTouchListener {
     private int mStartX, mStartY, mLastX, mLastY;
     private boolean mTouchResult = false;
 
-    private SonnyJackDragView(SonnyJackDragView.Builder builder, View view) {
-        mActivity = builder.activity;
-        mDragView = view;
+    private SonnyJackDragView(SonnyJackDragView.Builder builder) {
         mBuilder = builder;
         initDragView();
     }
 
     public View getDragView() {
-        return mDragView;
+        return mBuilder.view;
+    }
+
+    public Activity getActivity() {
+        return mBuilder.activity;
     }
 
     public boolean getNeedNearEdge() {
@@ -53,27 +53,27 @@ public class SonnyJackDragView implements View.OnTouchListener {
     }
 
     private void initDragView() {
-        if (null == mActivity) {
+        if (null == getActivity()) {
             throw new NullPointerException("the activity is null");
         }
-        if (null == mDragView) {
+        if (null == mBuilder.view) {
             throw new NullPointerException("the dragView is null");
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mBuilder.activity.isDestroyed()) {
             return;
         }
 
         //屏幕宽高
-        WindowManager windowManager = (WindowManager) mActivity.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         if (null != windowManager) {
-            DisplayMetrics displayMetrics = mActivity.getResources().getDisplayMetrics();
+            DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
             mScreenWidth = displayMetrics.widthPixels;
             mScreenHeight = displayMetrics.heightPixels;
         }
 
         //状态栏高度
         Rect frame = new Rect();
-        mActivity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        getActivity().getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
         mStatusBarHeight = frame.top;
         if (mStatusBarHeight <= 0) {
             try {
@@ -81,7 +81,7 @@ public class SonnyJackDragView implements View.OnTouchListener {
                 Object obj = c.newInstance();
                 Field field = c.getField("status_bar_height");
                 int x = Integer.parseInt(field.get(obj).toString());
-                mStatusBarHeight = mActivity.getResources().getDimensionPixelSize(x);
+                mStatusBarHeight = getActivity().getResources().getDimensionPixelSize(x);
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -89,13 +89,22 @@ public class SonnyJackDragView implements View.OnTouchListener {
 
         int left = mBuilder.needNearEdge ? 0 : mBuilder.defaultLeft;
         FrameLayout.LayoutParams layoutParams = createLayoutParams(left, mStatusBarHeight + mBuilder.defaultTop, 0, 0);
-        FrameLayout rootLayout = (FrameLayout) mActivity.getWindow().getDecorView();
-        rootLayout.addView(mDragView, layoutParams);
-        mDragView.setOnTouchListener(this);
+        FrameLayout rootLayout = (FrameLayout) getActivity().getWindow().getDecorView();
+        rootLayout.addView(getDragView(), layoutParams);
+        getDragView().setOnTouchListener(this);
     }
 
-    public static SonnyJackDragView addDragView(SonnyJackDragView.Builder builder, View view) {
-        SonnyJackDragView sonnyJackDragView = new SonnyJackDragView(builder, view);
+    private static SonnyJackDragView createDragView(SonnyJackDragView.Builder builder) {
+        if (null == builder) {
+            throw new NullPointerException("the param builder is null when execute method createDragView");
+        }
+        if (null == builder.activity) {
+            throw new NullPointerException("the activity is null");
+        }
+        if (null == builder.view) {
+            throw new NullPointerException("the view is null");
+        }
+        SonnyJackDragView sonnyJackDragView = new SonnyJackDragView(builder);
         return sonnyJackDragView;
     }
 
@@ -155,12 +164,12 @@ public class SonnyJackDragView implements View.OnTouchListener {
      * 移至最近的边沿
      */
     private void moveNearEdge() {
-        int left = mDragView.getLeft();
+        int left = getDragView().getLeft();
         int lastX;
-        if (left + mDragView.getWidth() / 2 <= mScreenWidth / 2) {
+        if (left + getDragView().getWidth() / 2 <= mScreenWidth / 2) {
             lastX = 0;
         } else {
-            lastX = mScreenWidth - mDragView.getWidth();
+            lastX = mScreenWidth - getDragView().getWidth();
         }
         ValueAnimator valueAnimator = ValueAnimator.ofInt(left, lastX);
         valueAnimator.setDuration(1000);
@@ -170,7 +179,7 @@ public class SonnyJackDragView implements View.OnTouchListener {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int left = (int) animation.getAnimatedValue();
-                mDragView.setLayoutParams(createLayoutParams(left, mDragView.getTop(), 0, 0));
+                getDragView().setLayoutParams(createLayoutParams(left, getDragView().getTop(), 0, 0));
             }
         });
         valueAnimator.start();
@@ -188,6 +197,7 @@ public class SonnyJackDragView implements View.OnTouchListener {
         private int defaultTop = 0;
         private int defaultLeft = 0;
         private boolean needNearEdge = false;
+        private View view;
 
         public Builder setActivity(Activity activity) {
             this.activity = activity;
@@ -212,6 +222,15 @@ public class SonnyJackDragView implements View.OnTouchListener {
         public Builder setNeedNearEdge(boolean needNearEdge) {
             this.needNearEdge = needNearEdge;
             return this;
+        }
+
+        public Builder setView(View view) {
+            this.view = view;
+            return this;
+        }
+
+        public SonnyJackDragView build() {
+            return createDragView(this);
         }
     }
 }

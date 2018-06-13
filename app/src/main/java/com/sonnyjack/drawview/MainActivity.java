@@ -20,34 +20,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mButton = findViewById(R.id.btn_move);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean needNearEdge = mSonnyJackDragView.getNeedNearEdge();
-                mSonnyJackDragView.setNeedNearEdge(!needNearEdge);
-                if (needNearEdge) {
-                    mButton.setText("移至边沿");
-                } else {
-                    mButton.setText("固定位置");
-                }
+        mButton.setOnClickListener(v -> {
+            boolean needNearEdge = mSonnyJackDragView.getNeedNearEdge();
+            mSonnyJackDragView.setNeedNearEdge(!needNearEdge);
+            if (needNearEdge) {
+                mButton.setText("移至边沿");
+            } else {
+                mButton.setText("固定位置");
             }
         });
+        ImageView imageView = new ImageView(this);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setImageResource(R.mipmap.ic_launcher_round);
+        imageView.setOnClickListener(v -> Toast.makeText(MainActivity.this, "点击了...", Toast.LENGTH_SHORT).show());
 
-        SonnyJackDragView.Builder builder = new SonnyJackDragView.Builder()
+        mSonnyJackDragView = new SonnyJackDragView.Builder()
                 .setActivity(this)
                 .setDefaultLeft(30)
                 .setDefaultTop(30)
                 .setNeedNearEdge(false)
-                .setSize(100);
-        ImageView imageView = new ImageView(this);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.ic_launcher_round);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "点击了...", Toast.LENGTH_SHORT).show();
-            }
-        });
-        mSonnyJackDragView = SonnyJackDragView.addDragView(builder, imageView);
+                .setSize(100)
+                .setView(imageView)
+                .build();
     }
 }
