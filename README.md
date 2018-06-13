@@ -27,6 +27,8 @@ api 'com.sonnyjack.widget:DrawView:0.1.2'
     sonnyJackDragView.setNeedNearEdge(!needNearEdge);
 
 效果如图：
+
+
 <div align=center>
     <img width="30%" height="30%" src="https://github.com/linqssonny/DragView/blob/master/device-2018-06-13-215330.png"/>
     <img width="30%" height="30%" src="https://github.com/linqssonny/DragView/blob/master/device-2018-06-13-215423.png"/>
