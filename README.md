@@ -1,9 +1,11 @@
 #使用方式
-implementation 'com.sonnyjack.widget:DrawView:0.1.2'
+implementation 'com.sonnyjack.widget:DragView:0.1.0'
 
 或
 
-api 'com.sonnyjack.widget:DrawView:0.1.2'
+api 'com.sonnyjack.widget:DragView:0.1.0'
+
+备注：由于之前的命名有误，DrawView改为DragView
 
 用法如下：
 
